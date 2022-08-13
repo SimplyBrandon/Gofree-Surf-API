@@ -716,9 +716,9 @@
                         "example": 400
                     },
                     "velStartXYZ": {
-                        "schema": "520",
                         "description": "The starting speed of the player, using XYZ velocity, on this map,",
-                        "type": "integer"
+                        "type": "integer",
+                        "example": 520
                     },
                     "velStartZ": {
                         "description": "The starting speed of the player, using only Z velocity, on this map,",
@@ -733,7 +733,7 @@
                     "velEndXYZ": {
                         "description": "The speed of the player, using XYZ velocity, at the end of this map,",
                         "type": "integer",
-                        "example": "2057"
+                        "example": 2057
                     },
                     "velEndZ": {
                         "description": "The speed of the player, using only Z velocity, at the end of this map,",
