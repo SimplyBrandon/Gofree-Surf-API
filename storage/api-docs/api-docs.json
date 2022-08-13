@@ -1,0 +1,758 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "GoFree Surfers API",
+        "description": "The GoFree Surfers API is a RESTful API that provides access to data that's collected from the GoFree Surfers database. <br>In Version 1.0.0 this API currently only provides endpoints for maps and players. <br>For more information, please visit the Discord server.<br/><br/>Created by <a href='https://stats.go-free.info/player/STEAM_1:0:50362476'>Simply Brandon</a>",
+        "contact": {
+            "name": "GoFree Community Discord Server",
+            "url": "https://discord.gg/aTf8J7xT9n"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/maps": {
+            "get": {
+                "tags": [
+                    "Maps"
+                ],
+                "summary": "Get all maps",
+                "description": "Returns a paginated response of maps, in the given style.",
+                "operationId": "indexMaps",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page of maps to return. Varies giving the amount of maps per page. Default: 1",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "The amount of maps to return per page. Default/Min: 30. Max: 10000.",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 10000,
+                            "minimum": 30
+                        }
+                    },
+                    {
+                        "name": "mapname",
+                        "in": "query",
+                        "description": "Queries the maps names for likeliness to the search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tier",
+                        "in": "query",
+                        "description": "Filters the maps by tier.",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 8,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Map"
+                                            }
+                                        },
+                                        "first_page_url": {
+                                            "type": "string",
+                                            "example": "/api/v1/maps?page=1"
+                                        },
+                                        "from": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 10000
+                                        },
+                                        "last_page_url": {
+                                            "type": "integer",
+                                            "example": "/api/v1/maps?page=100"
+                                        },
+                                        "next_page_url": {
+                                            "type": "string",
+                                            "example": "/api/v1/maps?page=2"
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "example": "/api/v1/maps"
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 30
+                                        },
+                                        "prev_page_url": {
+                                            "type": "integer",
+                                            "example": null
+                                        },
+                                        "to": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Maps not found"
+                    },
+                    "400": {
+                        "description": "Out of Bounds"
+                    }
+                }
+            }
+        },
+        "/api/v1/maps/{mapname}": {
+            "get": {
+                "tags": [
+                    "Maps"
+                ],
+                "summary": "Get a map by mapname",
+                "description": "Returns a record of a map, if found.",
+                "operationId": "showMap",
+                "parameters": [
+                    {
+                        "name": "mapname",
+                        "in": "path",
+                        "description": "The name of the map to return.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "surf_utopia_v3"
+                        }
+                    },
+                    {
+                        "name": "style",
+                        "in": "query",
+                        "description": "The style of the record to return. Default: 0",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 10,
+                            "minimum": 0,
+                            "example": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Map"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Map not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/players": {
+            "get": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Get all players",
+                "description": "Returns a paginated response of players, in the given style.",
+                "operationId": "indexPlayers",
+                "parameters": [
+                    {
+                        "name": "style",
+                        "in": "query",
+                        "description": "The style of the players to return. Default: 0 [Normal]",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page of maps to return. Varies giving the amount of maps per page. Default: 1",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "The amount of players to return per page. Default/Min: 30. Max: 10000.",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 10000,
+                            "minimum": 30
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Queries the players names for likeliness to the search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "The attribute in which to order the players by. Default: points",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Player"
+                                            }
+                                        },
+                                        "first_page_url": {
+                                            "type": "string",
+                                            "example": "/api/v1/players?page=1"
+                                        },
+                                        "from": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 10000
+                                        },
+                                        "last_page_url": {
+                                            "type": "integer",
+                                            "example": "/api/v1/players?page=100"
+                                        },
+                                        "next_page_url": {
+                                            "type": "string",
+                                            "example": "/api/v1/players?page=2"
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "example": "/api/v1/players"
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 30
+                                        },
+                                        "prev_page_url": {
+                                            "type": "integer",
+                                            "example": null
+                                        },
+                                        "to": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Players not found"
+                    },
+                    "400": {
+                        "description": "Out of Range"
+                    }
+                }
+            }
+        },
+        "/api/v1/players/{steamid}": {
+            "get": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Get a player by their steamid, in a given style",
+                "description": "Returns a single player record, in the given style, if it exists.",
+                "operationId": "showPlayer",
+                "parameters": [
+                    {
+                        "name": "steamid",
+                        "in": "path",
+                        "description": "The Community SteamID of the player to return. *Not* their SteamID 64.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "style",
+                        "in": "query",
+                        "description": "The style of the player record to return. Default: 0 [Normal]",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Player"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Player not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Player not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Style is out of range [0-10]",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Style is out of range [0-10]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/times/{mapname}": {
+            "get": {
+                "tags": [
+                    "Times"
+                ],
+                "summary": "Get all times for a map",
+                "description": "Returns a paginated response of player times, in the given style.",
+                "operationId": "indexTimes",
+                "parameters": [
+                    {
+                        "name": "mapname",
+                        "in": "path",
+                        "description": "The name of the map to view player times of. Default: 0 [Normal]",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "surf_utopia_v3"
+                        }
+                    },
+                    {
+                        "name": "style",
+                        "in": "query",
+                        "description": "The style of the times to return. Default: 0 [Normal]",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 10,
+                            "minimum": 0,
+                            "example": 0
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page of times to return. Varies giving the amount of maps per page. Default: 1",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "The amount of times to return per page. Default/Min: 30. Max: 10000.",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 10000,
+                            "minimum": 30,
+                            "example": 30
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "The attribute in which to order the players by. Default: runtimepro",
+                        "schema": {
+                            "type": "string",
+                            "example": "runtimepro_asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Time"
+                                            }
+                                        },
+                                        "first_page_url": {
+                                            "type": "string",
+                                            "example": "/api/v1/players?page=1"
+                                        },
+                                        "from": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 10000
+                                        },
+                                        "last_page_url": {
+                                            "type": "integer",
+                                            "example": "/api/v1/players?page=100"
+                                        },
+                                        "next_page_url": {
+                                            "type": "string",
+                                            "example": "/api/v1/players?page=2"
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "example": "/api/v1/players"
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 30
+                                        },
+                                        "prev_page_url": {
+                                            "type": "integer",
+                                            "example": null
+                                        },
+                                        "to": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Maps not found"
+                    },
+                    "400": {
+                        "description": "Out of Range"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Map": {
+                "title": "Map",
+                "description": "This is the record of a Map currently in the map listings of GoFree",
+                "properties": {
+                    "mapname": {
+                        "description": "The name of the map,",
+                        "type": "string",
+                        "example": "surf_utopia_v3"
+                    },
+                    "tier": {
+                        "description": "The tier of the map,",
+                        "type": "integer",
+                        "maximum": 8,
+                        "minimum": 1,
+                        "example": 1
+                    },
+                    "maxvelocity": {
+                        "description": "The limit of speed applied to this map,",
+                        "type": "integer",
+                        "example": 9999
+                    },
+                    "ranked": {
+                        "description": "Whether this map is currently available in the map listings,",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "record": {
+                        "$ref": "#/components/schemas/Time"
+                    },
+                    "bonuses": {
+                        "description": "The amount of bonuses this map has,",
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "stages": {
+                        "description": "The amount of stages this map has,",
+                        "type": "integer",
+                        "example": 3
+                    }
+                },
+                "type": "object"
+            },
+            "Player": {
+                "title": "Player",
+                "description": "This is the record of a player, from a specific style. Note that each style a player plays in, is a separate record.",
+                "properties": {
+                    "steamid": {
+                        "description": "The players community SteamID,",
+                        "type": "string",
+                        "example": "STEAM_1:0:12345678"
+                    },
+                    "steamid64": {
+                        "description": "The players SteamID64,",
+                        "type": "string",
+                        "example": "12345678910121314"
+                    },
+                    "name": {
+                        "description": "The players name,",
+                        "type": "string",
+                        "example": "Surfer"
+                    },
+                    "country": {
+                        "description": "The players country,",
+                        "type": "string",
+                        "example": "The United Kingdom"
+                    },
+                    "points": {
+                        "description": "The players points in this style,",
+                        "type": "integer",
+                        "example": 100000
+                    },
+                    "wrpoints": {
+                        "description": "The amount of points this player has gained from acquiring world records on maps,",
+                        "type": "integer",
+                        "example": 16666
+                    },
+                    "wrbpoints": {
+                        "description": "The amount of points this player has gained from acquiring world records on bonuses,",
+                        "type": "integer",
+                        "example": 16666
+                    },
+                    "top10points": {
+                        "description": "The amount of points this player has gained from placing in the top 10 on maps,",
+                        "type": "integer",
+                        "example": 16666
+                    },
+                    "groupspoints": {
+                        "description": "The amount of points this player has gained from completing a map within a group placing,",
+                        "type": "integer",
+                        "example": 16666
+                    },
+                    "mappoints": {
+                        "description": "The amount of points this player has gained from completing maps,",
+                        "type": "integer",
+                        "example": 16666
+                    },
+                    "bonuspoints": {
+                        "description": "The amount of points this player has gained from completing bonuses,",
+                        "type": "integer",
+                        "example": 16666
+                    },
+                    "finishedmaps": {
+                        "description": "The amount of maps this player has completed",
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "finishedbonuses": {
+                        "description": "The amount of bonuses this player has completed",
+                        "type": "integer",
+                        "example": 80
+                    },
+                    "finishedstages": {
+                        "description": "The amount of stages this player has completed",
+                        "type": "integer",
+                        "example": 230
+                    },
+                    "wrs": {
+                        "description": "The amount of map world records this player currently holds",
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "wrbs": {
+                        "description": "The amount of bonus world records this player currently holds",
+                        "type": "integer",
+                        "example": 31
+                    },
+                    "wrcps": {
+                        "description": "The amount of stage world records this player currently holds",
+                        "type": "integer",
+                        "example": 71
+                    },
+                    "top10s": {
+                        "description": "The amount of top 10 placements this player currently holds",
+                        "type": "integer",
+                        "example": 11
+                    },
+                    "groups": {
+                        "description": "The amount of groups this player has placed in",
+                        "type": "integer",
+                        "example": 66
+                    },
+                    "lastseen": {
+                        "description": "A timestamp containing the last time this player has been seen on any GoFree server",
+                        "type": "string",
+                        "example": "2021-01-02T20:12:34.000000Z"
+                    },
+                    "joined": {
+                        "description": "A timestamp containing the date this player first completed a map on GoFree",
+                        "type": "string",
+                        "example": "2021-01-02T20:12:34.000000Z"
+                    },
+                    "timealive": {
+                        "description": "The amount of seconds this player has spent alive on a GoFree server",
+                        "type": "integer",
+                        "example": 371307
+                    },
+                    "timespec": {
+                        "description": "The amount of seconds this player has spent spectating on a GoFree server",
+                        "type": "integer",
+                        "example": 37123
+                    },
+                    "connections": {
+                        "description": "The amount of times this player has connected to any GoFree server",
+                        "type": "integer",
+                        "example": 1030
+                    },
+                    "style": {
+                        "description": "The style of surfing that this players record is currently comprised of<br/>[0 = Normal, 1 = Sideways, 2 = Half-Sideways, 3 = Backwards, 4  = Low-Gravity, 5 = Slow Motion, 6 = Fast Forward, 7 = Freestyle, 8 = Golden Knife, 9 = Velocity Multiplier]",
+                        "type": "integer",
+                        "maximum": 10,
+                        "minimum": 0,
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "Time": {
+                "title": "Time",
+                "description": "This is a time for a map, in a specific style.",
+                "properties": {
+                    "steamid": {
+                        "description": "The SteamID of the player who holds this time,",
+                        "type": "string",
+                        "example": "STEAM_1:0:12345678"
+                    },
+                    "mapname": {
+                        "description": "The name of the map that this time was set on,",
+                        "type": "string",
+                        "example": "surf_utopia_v3"
+                    },
+                    "name": {
+                        "description": "The name of the player who holds this time,",
+                        "type": "string",
+                        "example": "Surfer"
+                    },
+                    "runtimepro": {
+                        "description": "The time, in seconds, it took the player to complete the map,",
+                        "type": "integer",
+                        "example": 32.6855
+                    },
+                    "velStartXY": {
+                        "description": "The starting speed of the player, using XY velocity, on this map,",
+                        "type": "integer",
+                        "example": 400
+                    },
+                    "velStartXYZ": {
+                        "schema": "520",
+                        "description": "The starting speed of the player, using XYZ velocity, on this map,",
+                        "type": "integer"
+                    },
+                    "velStartZ": {
+                        "description": "The starting speed of the player, using only Z velocity, on this map,",
+                        "type": "integer",
+                        "example": -330
+                    },
+                    "velEndXY": {
+                        "description": "The speed of the player, using XY velocity, at the end of this map,",
+                        "type": "integer",
+                        "example": 2040
+                    },
+                    "velEndXYZ": {
+                        "schema": "2057",
+                        "description": "The speed of the player, using XYZ velocity, at the end of this map,",
+                        "type": "integer"
+                    },
+                    "velEndZ": {
+                        "description": "The speed of the player, using only Z velocity, at the end of this map,",
+                        "type": "integer",
+                        "example": 250
+                    },
+                    "style": {
+                        "description": "The style the player was surfing in when they set this time,",
+                        "type": "integer",
+                        "example": 250
+                    },
+                    "time": {
+                        "description": "The date the player set this time,",
+                        "type": "string",
+                        "example": "2021-04-22 17:35:36"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}
