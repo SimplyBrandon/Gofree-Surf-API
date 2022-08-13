@@ -76,7 +76,7 @@ use OpenApi\Annotations\Schema;
     /**
      * The speed of the player, using XYZ velocity, at the end of this map,
      * @var int
-     * @OA\Property(schema="2057")
+     * @OA\Property(example="2057")
      */
     public $velEndXYZ;
     
